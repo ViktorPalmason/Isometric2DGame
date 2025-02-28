@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] float movementSpeed = 10f;
+
     Rigidbody2D body;
     InputAction move;
 
@@ -21,13 +23,16 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+    }
+
+    private void FixedUpdate()
+    {
         ProcessMovement();
     }
 
     void ProcessMovement()
     {
         Vector2 input = move.ReadValue<Vector2>();
-        body.AddForce(input);
-
+        body.AddForce(input * movementSpeed * Time.fixedDeltaTime);       
     }
 }
