@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 
 public class Projectile : MonoBehaviour
 {
@@ -30,5 +31,15 @@ public class Projectile : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Enemy"))
+        {
+            Debug.Log("Hit enemy");
+        }
+
+        Destroy(gameObject, 0.03f);
     }
 }
