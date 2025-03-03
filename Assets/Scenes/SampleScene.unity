@@ -337,7 +337,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDamping: 0
-  m_AngularDamping: 0.05
+  m_AngularDamping: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -396,10 +396,10 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0, y: 0.25}
-      - {x: -0.5, y: 0}
-      - {x: 0, y: -0.25}
-      - {x: 0.5, y: 0}
+    - - {x: 0, y: 0.23}
+      - {x: -0.48, y: 0}
+      - {x: 0, y: -0.23}
+      - {x: 0.48, y: 0}
   m_UseDelaunayMesh: 0
 --- !u!212 &589021937
 SpriteRenderer:
