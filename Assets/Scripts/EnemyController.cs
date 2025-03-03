@@ -1,6 +1,7 @@
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class EnemyController : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] float firstAttackDelay = 0.5f;
     [SerializeField] float timeToStayIdle = 1f;
     [SerializeField] int health = 20;
+    [SerializeField] Slider slider;
     NavMeshAgent agent;
 
     public enum States { Patrol, Chase, Attack, Idle };
@@ -31,6 +33,7 @@ public class EnemyController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        slider.maxValue = health;
         goToNextPatrolPoint();
     }
 
@@ -127,10 +130,16 @@ public class EnemyController : MonoBehaviour
     public void TakeDamage(int damage)
     {
         health -= damage;
-        if(health <= 0)
+        SetCurrentHealth(health);
+        if (health <= 0)
         {
             Destroy(gameObject);
         }
+    }
+
+    void SetCurrentHealth(int currentHealth)
+    {
+        slider.value = currentHealth;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
