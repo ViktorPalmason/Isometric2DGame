@@ -1,3 +1,4 @@
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -10,13 +11,15 @@ public class EnemyController : MonoBehaviour
     [SerializeField] float attackPower = 10f;
     [SerializeField] float attackRate = 1.5f;
     [SerializeField] float firstAttackDelay = 0.5f;
+    [SerializeField] float timeToStayIdle = 1f;
 
     NavMeshAgent agent;
 
-    public enum States { Idol, Patrol, Chase, Attack};
+    public enum States { Patrol, Chase, Attack, Idle };
     public States currentState = States.Patrol;
     int currentPatrol = 0;
     float timeUntilNextAttack = 0f;
+    float timeUntilPatrol = 0f;
 
     private void Awake()
     {
@@ -45,7 +48,8 @@ public class EnemyController : MonoBehaviour
             case States.Attack:
                 Attack();
                 break;
-            case States.Idol:
+            case States.Idle:
+                Idle();
                 break;
         }            
     }
@@ -70,8 +74,9 @@ public class EnemyController : MonoBehaviour
 
         if (Vector2.Distance(player.transform.position, transform.position) > chaseRadius)
         {
-            currentState = States.Patrol;
-            goToNextPatrolPoint();
+            agent.isStopped = true;
+            timeUntilPatrol = 0;
+            currentState = States.Idle;
         }
         else if (agent.remainingDistance < attackRadius) {
             currentState = States.Attack;
@@ -98,12 +103,28 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    void Idle()
+    {
+        if(timeUntilPatrol < timeToStayIdle)
+        {
+            timeUntilPatrol += Time.deltaTime;
+        }
+        else
+        {
+            timeUntilPatrol = 0f;
+            currentState = States.Patrol;
+            agent.isStopped = false;
+            goToNextPatrolPoint();
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
             if(currentState != States.Chase || currentState != States.Attack)
             {
+                agent.isStopped = false;
                 currentState = States.Chase;
             }
         }

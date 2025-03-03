@@ -939,6 +939,12 @@ MonoBehaviour:
   - {fileID: 2072265277}
   player: {fileID: 589021933}
   chaseRadius: 8
+  attackRadius: 2
+  attackPower: 10
+  attackRate: 1.5
+  firstAttackDelay: 0.5
+  timeToStayIdle: 2
+  currentState: 1
 --- !u!58 &1670298918
 CircleCollider2D:
   m_ObjectHideFlags: 0
