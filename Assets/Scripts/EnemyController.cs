@@ -4,6 +4,8 @@ using UnityEngine.AI;
 public class EnemyController : MonoBehaviour
 {
     [SerializeField] Transform[] patrols;
+    [SerializeField] GameObject player;
+    [SerializeField] float chaseRadius = 8f;
 
     NavMeshAgent agent;
 
@@ -32,6 +34,13 @@ public class EnemyController : MonoBehaviour
             case States.Patrol:
                 Patrol();
                 break;
+            case States.Chase:
+                Chase();
+                break;
+            case States.Attack:
+                break;
+            case States.Idol:
+                break;
         }            
     }
 
@@ -47,5 +56,26 @@ public class EnemyController : MonoBehaviour
     {
         agent.SetDestination(patrols[currentPatrol].position);
         currentPatrol = (currentPatrol + 1) % patrols.Length;
+    }
+
+    void Chase()
+    {
+        agent.SetDestination(player.transform.position);
+        if (Vector2.Distance(player.transform.position, transform.position) > chaseRadius)
+        {
+            currentState = States.Patrol;
+            goToNextPatrolPoint();
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            if(currentState != States.Chase || currentState != States.Attack)
+            {
+                currentState = States.Chase;
+            }
+        }
     }
 }
