@@ -9,7 +9,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float deAcceleration = 1.2f;
 
     Rigidbody2D body;
-    InputAction move;
 
     // The direction the players across the x axis
     float xDir = Mathf.Sin(Mathf.Deg2Rad * 105f);
@@ -23,23 +22,11 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         body = GetComponent<Rigidbody2D>();
-        move = InputSystem.actions.FindAction("Player/Move");
 
         NorthEast = new Vector2(xDir, yDir).normalized;
         NorthWest = new Vector2(-xDir, yDir).normalized;
         SouthWest = new Vector2(-xDir, -yDir).normalized;
         SouthEast = new Vector2(xDir, -yDir).normalized;
-    }
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
     }
 
     private void FixedUpdate()
@@ -49,8 +36,6 @@ public class PlayerController : MonoBehaviour
 
     void ProcessMovement()
     {
-        Vector2 input = move.ReadValue<Vector2>();
-
         if(Keyboard.current.wKey.isPressed)
         {
             body.linearVelocity = NorthEast * maxSpeed;
@@ -73,10 +58,5 @@ public class PlayerController : MonoBehaviour
             }
             body.linearVelocity /= deAcceleration;
         }
-    }
-
-    public void takeDamage(float damage)
-    {
-        Debug.Log("Player took " + damage + " from the enemy");
     }
 }

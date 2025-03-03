@@ -7,6 +7,7 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] GameObject projectile;
     [SerializeField] Transform weapon;
     [SerializeField] Transform spawn;
+    [SerializeField] int Health = 50;
 
     Mouse mouse = Mouse.current;
     InputAction attack;
@@ -17,11 +18,6 @@ public class PlayerCombat : MonoBehaviour
             cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         }
         attack = InputSystem.actions.FindAction("Player/Attack");
-    }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-
     }
 
     // Update is called once per frame
@@ -46,5 +42,20 @@ public class PlayerCombat : MonoBehaviour
         float rotz = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
         Instantiate(projectile, spawn.position, Quaternion.Euler(0, 0, rotz + 90f));
+    }
+
+    public void takeDamage(int damage)
+    {
+        Debug.Log("Player took " + damage + " from the enemy and has " + Health + " left.");
+        Health -= damage;
+        if(Health <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    public bool isDead()
+    {
+        return (Health <= 0);
     }
 }

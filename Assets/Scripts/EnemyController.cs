@@ -8,7 +8,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] GameObject player;
     [SerializeField] float chaseRadius = 8f;
     [SerializeField] float attackRadius = 2f;
-    [SerializeField] float attackPower = 10f;
+    [SerializeField] int attackPower = 10;
     [SerializeField] float attackRate = 1.5f;
     [SerializeField] float firstAttackDelay = 0.5f;
     [SerializeField] float timeToStayIdle = 1f;
@@ -85,14 +85,20 @@ public class EnemyController : MonoBehaviour
 
     void Attack()
     {
-        if(timeUntilNextAttack < firstAttackDelay)
+        if (timeUntilNextAttack < firstAttackDelay)
         {
             timeUntilNextAttack += Time.deltaTime;
         }
         else if(Time.time > timeUntilNextAttack)
         {
-            player.GetComponent<PlayerController>().takeDamage(attackPower);
+            player.GetComponent<PlayerCombat>().takeDamage(attackPower);
             timeUntilNextAttack = Time.time + attackRate;
+            if (player.GetComponent<PlayerCombat>().isDead())
+            {
+                agent.isStopped = true;
+                timeUntilPatrol = 0;
+                currentState = States.Idle;
+            }
         }
 
         agent.SetDestination(player.transform.position);
