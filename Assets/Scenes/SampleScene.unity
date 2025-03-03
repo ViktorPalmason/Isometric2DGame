@@ -396,9 +396,9 @@ GameObject:
   - component: {fileID: 589021938}
   - component: {fileID: 589021937}
   - component: {fileID: 589021934}
+  - component: {fileID: 589021939}
   - component: {fileID: 589021935}
   - component: {fileID: 589021936}
-  - component: {fileID: 589021939}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -581,6 +581,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 519420031}
+  projectile: {fileID: 9203584054742293673, guid: ab233bc6dc92c02408657d1a75ca4daf, type: 3}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
