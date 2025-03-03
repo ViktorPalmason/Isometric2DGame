@@ -6,12 +6,17 @@ public class EnemyController : MonoBehaviour
     [SerializeField] Transform[] patrols;
     [SerializeField] GameObject player;
     [SerializeField] float chaseRadius = 8f;
+    [SerializeField] float attackRadius = 2f;
+    [SerializeField] float attackPower = 10f;
+    [SerializeField] float attackRate = 1.5f;
+    [SerializeField] float firstAttackDelay = 0.5f;
 
     NavMeshAgent agent;
 
-    enum States { Idol, Patrol, Chase, Attack};
-    States currentState = States.Patrol;
+    public enum States { Idol, Patrol, Chase, Attack};
+    public States currentState = States.Patrol;
     int currentPatrol = 0;
+    float timeUntilNextAttack = 0f;
 
     private void Awake()
     {
@@ -38,6 +43,7 @@ public class EnemyController : MonoBehaviour
                 Chase();
                 break;
             case States.Attack:
+                Attack();
                 break;
             case States.Idol:
                 break;
@@ -61,10 +67,34 @@ public class EnemyController : MonoBehaviour
     void Chase()
     {
         agent.SetDestination(player.transform.position);
+
         if (Vector2.Distance(player.transform.position, transform.position) > chaseRadius)
         {
             currentState = States.Patrol;
             goToNextPatrolPoint();
+        }
+        else if (agent.remainingDistance < attackRadius) {
+            currentState = States.Attack;
+        }
+    }
+
+    void Attack()
+    {
+        if(timeUntilNextAttack < firstAttackDelay)
+        {
+            timeUntilNextAttack += Time.deltaTime;
+        }
+        else if(Time.time > timeUntilNextAttack)
+        {
+            player.GetComponent<PlayerController>().takeDamage(attackPower);
+            timeUntilNextAttack = Time.time + attackRate;
+        }
+
+        agent.SetDestination(player.transform.position);
+        if (agent.remainingDistance > attackRadius)
+        {
+            timeUntilNextAttack = 0f;
+            currentState = States.Chase;
         }
     }
 

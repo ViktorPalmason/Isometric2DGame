@@ -15,9 +15,6 @@ public class PlayerController : MonoBehaviour
     float xDir = Mathf.Sin(Mathf.Deg2Rad * 105f);
     float yDir = Mathf.Sin(Mathf.Deg2Rad * 150f);
 
-    //Vector2 moveDir = new Vector2(Mathf.Sin(Mathf.Deg2Rad * 105f), Mathf.Sin(Mathf.Deg2Rad * 150f));
-    Vector2 currentDir;
-
     Vector2 NorthEast;
     Vector2 NorthWest;
     Vector2 SouthWest;
@@ -76,5 +73,10 @@ public class PlayerController : MonoBehaviour
             }
             body.linearVelocity /= deAcceleration;
         }
+    }
+
+    public void takeDamage(float damage)
+    {
+        Debug.Log("Player took " + damage + " from the enemy");
     }
 }
