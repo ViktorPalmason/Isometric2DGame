@@ -7,6 +7,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] float speed = 20f;
     [SerializeField] Camera mainCam;
     [SerializeField] float distance = 10f;
+    [SerializeField] int attackPower = 5;
     
     Rigidbody2D body;
 
@@ -37,7 +38,7 @@ public class Projectile : MonoBehaviour
     {
         if (collision.collider.CompareTag("Enemy"))
         {
-            Debug.Log("Hit enemy");
+            collision.collider.GetComponent<EnemyController>().TakeDamage(attackPower);
         }
 
         Destroy(gameObject, 0.03f);

@@ -12,7 +12,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] float attackRate = 1.5f;
     [SerializeField] float firstAttackDelay = 0.5f;
     [SerializeField] float timeToStayIdle = 1f;
-
+    [SerializeField] int health = 20;
     NavMeshAgent agent;
 
     public enum States { Patrol, Chase, Attack, Idle };
@@ -115,6 +115,15 @@ public class EnemyController : MonoBehaviour
             currentState = States.Patrol;
             agent.isStopped = false;
             goToNextPatrolPoint();
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
+        if(health <= 0)
+        {
+            Destroy(gameObject);
         }
     }
 
