@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerCombat : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] Transform weapon;
     [SerializeField] Transform spawn;
     [SerializeField] int Health = 50;
+    [SerializeField] Slider slider;
 
     Mouse mouse = Mouse.current;
     InputAction attack;
@@ -18,6 +20,7 @@ public class PlayerCombat : MonoBehaviour
             cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         }
         attack = InputSystem.actions.FindAction("Player/Attack");
+        slider.maxValue = Health;
     }
 
     // Update is called once per frame
@@ -48,10 +51,16 @@ public class PlayerCombat : MonoBehaviour
     {
         Debug.Log("Player took " + damage + " from the enemy and has " + Health + " left.");
         Health -= damage;
-        if(Health <= 0)
+        SetCurrentHealth(Health);
+        if (Health <= 0)
         {
             Destroy(gameObject);
         }
+    }
+
+    void SetCurrentHealth(int currentHealth)
+    {
+        slider.value = currentHealth;
     }
 
     public bool isDead()
