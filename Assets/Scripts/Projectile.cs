@@ -20,7 +20,6 @@ public class Projectile : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
         startPos = transform.position;
         Vector3 mousePos = mainCam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        //Vector3 mousePos = mainCam.ScreenToWorldPoint(Input.mousePosition);
         Vector3 dir = mousePos - transform.position;
         body.linearVelocity = new Vector2(dir.x, dir.y).normalized * speed;
     }

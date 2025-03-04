@@ -94,6 +94,13 @@ public class EnemyController : MonoBehaviour
 
     void Chase()
     {
+        if (player.GetComponent<PlayerCombat>().isDead())
+        {
+            agent.isStopped = true;
+            timeUntilPatrol = 0;
+            currentState = States.Idle;
+        }
+
         agent.SetDestination(player.transform.position);
 
         if (Vector2.Distance(player.transform.position, transform.position) > chaseRadius)
@@ -116,9 +123,13 @@ public class EnemyController : MonoBehaviour
         }
         else if(Time.time > timeUntilNextAttack)
         {
-            player.GetComponent<PlayerCombat>().TakeDamage(attackPower);
-            timeUntilNextAttack = Time.time + attackRate;
-            if (player.GetComponent<PlayerCombat>().isDead())
+            if (!player.GetComponent<PlayerCombat>().isDead())
+            {
+                player.GetComponent<PlayerCombat>().TakeDamage(attackPower);
+                timeUntilNextAttack = Time.time + attackRate;
+            }
+            
+            if(player.GetComponent<PlayerCombat>().isDead())
             {
                 agent.isStopped = true;
                 timeUntilPatrol = 0;

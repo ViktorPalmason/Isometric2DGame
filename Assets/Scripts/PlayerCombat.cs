@@ -11,7 +11,7 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] int Health = 50;
     [SerializeField] Slider slider;
 
-    Mouse mouse = Mouse.current;
+    Mouse mouse;
     InputAction attack;
     private void Awake()
     {
@@ -20,6 +20,7 @@ public class PlayerCombat : MonoBehaviour
             cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         }
         attack = InputSystem.actions.FindAction("Player/Attack");
+        mouse = Mouse.current;
         slider.maxValue = Health;
     }
 
