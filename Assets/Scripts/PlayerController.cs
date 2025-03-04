@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float deAcceleration = 1.2f;
 
     Rigidbody2D body;
+    Animator anim;
+    InputAction move;
 
     // The direction the players across the x axis
     float xDir = Mathf.Sin(Mathf.Deg2Rad * 105f);
@@ -22,7 +24,8 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         body = GetComponent<Rigidbody2D>();
-
+        anim = GetComponent<Animator>();
+        move = InputSystem.actions.FindAction("Player/Move");
         NorthEast = new Vector2(xDir, yDir).normalized;
         NorthWest = new Vector2(-xDir, yDir).normalized;
         SouthWest = new Vector2(-xDir, -yDir).normalized;
@@ -36,24 +39,31 @@ public class PlayerController : MonoBehaviour
 
     void ProcessMovement()
     {
-        if(Keyboard.current.wKey.isPressed)
+        Vector2 input = move.ReadValue<Vector2>();
+        if(move.IsPressed())
+        {
+            anim.SetBool("IsMoving", true);
+        }
+
+        if (input.y > 0)
         {
             body.linearVelocity = NorthEast * maxSpeed;
-        } else if(Keyboard.current.aKey.isPressed)
+        } else if(input.x < 0)
         {
             body.linearVelocity = NorthWest * maxSpeed;
         }
-        else if (Keyboard.current.sKey.isPressed)
+        else if (input.y < 0)
         {
             body.linearVelocity = SouthWest * maxSpeed;
         }
-        else if (Keyboard.current.dKey.isPressed)
+        else if (input.x > 0)
         {
             body.linearVelocity = SouthEast * maxSpeed;
         }
-        {
-            if(body.linearVelocity.magnitude < 1f)
+        {            
+            if (body.linearVelocity.magnitude < 1f)
             {
+                anim.SetBool("IsMoving", false);
                 body.linearVelocity = Vector2.zero;
             }
             body.linearVelocity /= deAcceleration;
