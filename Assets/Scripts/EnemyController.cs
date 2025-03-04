@@ -15,6 +15,12 @@ public class EnemyController : MonoBehaviour
     [SerializeField] float timeToStayIdle = 1f;
     [SerializeField] int health = 20;
     [SerializeField] Slider slider;
+    [SerializeField] GameObject abilityProjectile;
+    [SerializeField] Transform abilityWeapon;
+    [SerializeField] Transform abilitySpawn;
+    [SerializeField] float abilityRate = 3.5f;
+    [SerializeField] float abilityCooldown = 0f;
+
     NavMeshAgent agent;
 
     public enum States { Patrol, Chase, Attack, Idle };
@@ -54,7 +60,22 @@ public class EnemyController : MonoBehaviour
             case States.Idle:
                 Idle();
                 break;
-        }            
+        }
+        
+        if(currentState == States.Attack || currentState == States.Chase)
+        {
+            Vector3 dir = abilityWeapon.position - player.transform.position;
+            float rotz = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+            abilityWeapon.rotation = Quaternion.Euler(0, 0, rotz);
+
+            abilityCooldown += Time.deltaTime;
+            if(abilityCooldown >= abilityRate)
+            {
+                ProjectileAbility();
+                abilityCooldown = 0f;
+            }
+        }
     }
 
     void Patrol()
@@ -79,6 +100,7 @@ public class EnemyController : MonoBehaviour
         {
             agent.isStopped = true;
             timeUntilPatrol = 0;
+            abilityCooldown = 0f;
             currentState = States.Idle;
         }
         else if (agent.remainingDistance < attackRadius) {
@@ -94,7 +116,7 @@ public class EnemyController : MonoBehaviour
         }
         else if(Time.time > timeUntilNextAttack)
         {
-            player.GetComponent<PlayerCombat>().takeDamage(attackPower);
+            player.GetComponent<PlayerCombat>().TakeDamage(attackPower);
             timeUntilNextAttack = Time.time + attackRate;
             if (player.GetComponent<PlayerCombat>().isDead())
             {
@@ -125,6 +147,11 @@ public class EnemyController : MonoBehaviour
             agent.isStopped = false;
             goToNextPatrolPoint();
         }
+    }
+
+    void ProjectileAbility()
+    {
+        Instantiate(abilityProjectile, abilitySpawn.position, Quaternion.identity);
     }
 
     public void TakeDamage(int damage)

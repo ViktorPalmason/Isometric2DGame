@@ -47,7 +47,7 @@ public class PlayerCombat : MonoBehaviour
         Instantiate(projectile, spawn.position, Quaternion.Euler(0, 0, rotz + 90f));
     }
 
-    public void takeDamage(int damage)
+    public void TakeDamage(int damage)
     {
         Debug.Log("Player took " + damage + " from the enemy and has " + Health + " left.");
         Health -= damage;
