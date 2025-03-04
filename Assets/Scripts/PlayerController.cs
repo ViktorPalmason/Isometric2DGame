@@ -7,8 +7,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float maxSpeed = 10f;
     [Range(1, 2)]
     [SerializeField] float deAcceleration = 1.2f;
+    [SerializeField] Rigidbody2D body;
 
-    Rigidbody2D body;
     Animator anim;
     InputAction move;
 
@@ -23,7 +23,11 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        body = GetComponent<Rigidbody2D>();
+        if(body == null)
+        {
+            body = GetComponentInChildren<Rigidbody2D>();
+        }
+
         anim = GetComponent<Animator>();
         move = InputSystem.actions.FindAction("Player/Move");
         NorthEast = new Vector2(xDir, yDir).normalized;
