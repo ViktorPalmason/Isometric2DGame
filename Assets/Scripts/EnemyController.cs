@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class EnemyController : MonoBehaviour
 {
+    [SerializeField] GameObject patrolPoints;
     [SerializeField] Transform[] patrols;
     [SerializeField] GameObject player;
     [SerializeField] float chaseRadius = 8f;
@@ -26,6 +27,7 @@ public class EnemyController : MonoBehaviour
     public enum States { Patrol, Chase, Attack, Idle };
     public States currentState = States.Patrol;
     int currentPatrol = 0;
+    int numberOfPatrols = 0;
     float timeUntilNextAttack = 0f;
     float timeUntilPatrol = 0f;
 
@@ -39,6 +41,24 @@ public class EnemyController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        if(patrolPoints == null)
+        {
+            patrolPoints = GameObject.Find("PatrolPoints");
+        }
+        numberOfPatrols = patrolPoints.transform.childCount;
+        if(patrols.Length != numberOfPatrols)
+        {
+            patrols = new Transform[numberOfPatrols];
+            for (int i = 0; i < numberOfPatrols; i++)
+            {
+                patrols[i] = patrolPoints.transform.GetChild(i).transform;
+            }
+        }
+        if(player == null)
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
+        }
+
         slider.maxValue = health;
         goToNextPatrolPoint();
     }
@@ -88,8 +108,10 @@ public class EnemyController : MonoBehaviour
 
     void goToNextPatrolPoint()
     {
-        agent.SetDestination(patrols[currentPatrol].position);
-        currentPatrol = (currentPatrol + 1) % patrols.Length;
+        // Get a random index to a patrol point
+        int nextPatrol = Random.Range(0, numberOfPatrols);
+        currentPatrol = nextPatrol;
+        agent.SetDestination(patrols[nextPatrol].position);
     }
 
     void Chase()
