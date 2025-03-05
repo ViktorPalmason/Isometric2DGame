@@ -23,6 +23,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] float abilityCooldown = 0f;
 
     NavMeshAgent agent;
+    Animator anim;
 
     public enum States { Patrol, Chase, Attack, Idle };
     public States currentState = States.Patrol;
@@ -34,6 +35,8 @@ public class EnemyController : MonoBehaviour
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
+        anim = GetComponent<Animator>();
+        currentState = States.Patrol;
         agent.updateRotation = false;
         agent.updateUpAxis = false;
         agent.autoBraking = false;
@@ -58,7 +61,10 @@ public class EnemyController : MonoBehaviour
         {
             player = GameObject.FindGameObjectWithTag("Player");
         }
-
+        anim.SetBool("IsPatroling", true);
+        anim.SetBool("IsChasing", false);
+        anim.SetBool("IsAttacking", false);
+        anim.SetBool("IsIdle", false);
         slider.maxValue = health;
         goToNextPatrolPoint();
     }
@@ -92,7 +98,7 @@ public class EnemyController : MonoBehaviour
             abilityCooldown += Time.deltaTime;
             if(abilityCooldown >= abilityRate)
             {
-                ProjectileAbility();
+                castAbility();
                 abilityCooldown = 0f;
             }
         }
@@ -100,6 +106,7 @@ public class EnemyController : MonoBehaviour
 
     void Patrol()
     {
+        anim.SetBool("IsPatroling", true);
         if(!agent.pathPending && agent.remainingDistance < 0.5f)
         {
             goToNextPatrolPoint();
@@ -116,10 +123,12 @@ public class EnemyController : MonoBehaviour
 
     void Chase()
     {
+        anim.SetBool("IsChasing", true);
         if (player.GetComponent<PlayerCombat>().isDead())
         {
             agent.isStopped = true;
             timeUntilPatrol = 0;
+            anim.SetBool("IsChasing", false);
             currentState = States.Idle;
         }
 
@@ -130,15 +139,18 @@ public class EnemyController : MonoBehaviour
             agent.isStopped = true;
             timeUntilPatrol = 0;
             abilityCooldown = 0f;
+            anim.SetBool("IsChasing", false);
             currentState = States.Idle;
         }
         else if (agent.remainingDistance < attackRadius) {
+            anim.SetBool("IsChasing", false);
             currentState = States.Attack;
         }
     }
 
     void Attack()
     {
+        anim.SetBool("IsAttacking", true);
         if (timeUntilNextAttack < firstAttackDelay)
         {
             timeUntilNextAttack += Time.deltaTime;
@@ -155,6 +167,7 @@ public class EnemyController : MonoBehaviour
             {
                 agent.isStopped = true;
                 timeUntilPatrol = 0;
+                anim.SetBool("IsAttacking", false);
                 currentState = States.Idle;
             }
         }
@@ -163,13 +176,15 @@ public class EnemyController : MonoBehaviour
         if (agent.remainingDistance > attackRadius)
         {
             timeUntilNextAttack = 0f;
+            anim.SetBool("IsAttacking", false);
             currentState = States.Chase;
         }
     }
 
     void Idle()
     {
-        if(timeUntilPatrol < timeToStayIdle)
+        anim.SetBool("IsIdle", true);
+        if (timeUntilPatrol < timeToStayIdle)
         {
             timeUntilPatrol += Time.deltaTime;
         }
@@ -178,11 +193,12 @@ public class EnemyController : MonoBehaviour
             timeUntilPatrol = 0f;
             currentState = States.Patrol;
             agent.isStopped = false;
+            anim.SetBool("IsIdle", false);
             goToNextPatrolPoint();
         }
     }
 
-    void ProjectileAbility()
+    void castAbility()
     {
         Instantiate(abilityProjectile, abilitySpawn.position, Quaternion.identity);
     }
@@ -206,6 +222,7 @@ public class EnemyController : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
+            anim.SetBool("IsPatroling", false);
             if(currentState != States.Chase || currentState != States.Attack)
             {
                 agent.isStopped = false;
