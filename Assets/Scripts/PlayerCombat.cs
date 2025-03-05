@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class PlayerCombat : MonoBehaviour
 {
+    [SerializeField] GameManager gameManager;
     [SerializeField] Camera cam;
     [SerializeField] GameObject projectile;
     [SerializeField] Transform weapon;
@@ -22,6 +23,11 @@ public class PlayerCombat : MonoBehaviour
         attack = InputSystem.actions.FindAction("Player/Attack");
         mouse = Mouse.current;
         slider.maxValue = Health;
+
+        if (gameManager == null)
+        {
+            gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+        }
     }
 
     // Update is called once per frame
@@ -55,6 +61,8 @@ public class PlayerCombat : MonoBehaviour
         SetCurrentHealth(Health);
         if (Health <= 0)
         {
+            gameManager.isPlayerDead = true;
+            gameManager.IsGameOver = true;
             Destroy(gameObject);
         }
     }

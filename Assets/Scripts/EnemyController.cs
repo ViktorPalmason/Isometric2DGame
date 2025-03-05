@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class EnemyController : MonoBehaviour
 {
+    [SerializeField] GameManager gameManager;
     [SerializeField] GameObject patrolPoints;
     [SerializeField] Transform[] patrols;
     [SerializeField] GameObject player;
@@ -60,6 +61,10 @@ public class EnemyController : MonoBehaviour
         if(player == null)
         {
             player = GameObject.FindGameObjectWithTag("Player");
+        }
+        if (gameManager == null)
+        {
+            gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
         }
         anim.SetBool("IsPatroling", true);
         anim.SetBool("IsChasing", false);
@@ -124,12 +129,13 @@ public class EnemyController : MonoBehaviour
     void Chase()
     {
         anim.SetBool("IsChasing", true);
-        if (player.GetComponent<PlayerCombat>().isDead())
+        if (gameManager.isPlayerDead)
         {
             agent.isStopped = true;
             timeUntilPatrol = 0;
             anim.SetBool("IsChasing", false);
             currentState = States.Idle;
+            return;
         }
 
         agent.SetDestination(player.transform.position);
@@ -157,18 +163,19 @@ public class EnemyController : MonoBehaviour
         }
         else if(Time.time > timeUntilNextAttack)
         {
-            if (!player.GetComponent<PlayerCombat>().isDead())
+            if (!gameManager.isPlayerDead)
             {
                 player.GetComponent<PlayerCombat>().TakeDamage(attackPower);
                 timeUntilNextAttack = Time.time + attackRate;
             }
             
-            if(player.GetComponent<PlayerCombat>().isDead())
+            if(gameManager.isPlayerDead)
             {
                 agent.isStopped = true;
                 timeUntilPatrol = 0;
                 anim.SetBool("IsAttacking", false);
                 currentState = States.Idle;
+                return;
             }
         }
 
