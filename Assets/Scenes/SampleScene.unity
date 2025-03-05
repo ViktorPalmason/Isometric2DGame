@@ -827,9 +827,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1268557356}
+  - component: {fileID: 1268557357}
   m_Layer: 0
   m_Name: Game Manager
-  m_TagString: Untagged
+  m_TagString: GameController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -849,6 +850,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1268557357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1268557355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6d1a8f4db35c7049b071e22699aecba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1395466090
 GameObject:
   m_ObjectHideFlags: 0
@@ -39508,6 +39521,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 589021933}
     - target: {fileID: 7173801525292109553, guid: 9e54661137cbaa144b4c7b0971ad4197, type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 1268557357}
+    - target: {fileID: 7173801525292109553, guid: 9e54661137cbaa144b4c7b0971ad4197, type: 3}
+      propertyPath: patrolPoints
+      value: 
+      objectReference: {fileID: 820579191}
+    - target: {fileID: 7173801525292109553, guid: 9e54661137cbaa144b4c7b0971ad4197, type: 3}
       propertyPath: 'patrols.Array.data[0]'
       value: 
       objectReference: {fileID: 1712686792}
@@ -39600,6 +39621,10 @@ PrefabInstance:
       propertyPath: slider
       value: 
       objectReference: {fileID: 1112718180}
+    - target: {fileID: 6428159802578089973, guid: b127bf08fb58fc14887bd029f6601719, type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 1268557357}
     - target: {fileID: 8807832793132523733, guid: b127bf08fb58fc14887bd029f6601719, type: 3}
       propertyPath: m_Name
       value: Player
